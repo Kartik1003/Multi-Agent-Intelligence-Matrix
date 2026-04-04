@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Intelligence System | Multi-Agent Strategic Planner</title>
+    <meta name="description" content="AI-powered multi-agent system combining weather, route, and cost intelligence to generate a fully optimized travel plan.">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="overlay"></div>
+
+    <div class="container">
+        <header class="header">
+            <h1>Travel Intelligence System</h1>
+            <p>Unified atmospheric and routing analysis for strategic navigation.</p>
+        </header>
+
+        <nav class="tabs">
+            <button class="tab-btn active" onclick="switchTab('weather')">🌦 Weather</button>
+            <button class="tab-btn" onclick="switchTab('route')">🗺 Route</button>
+            <button class="tab-btn" onclick="switchTab('cost')">💰 Cost</button>
+            <button class="tab-btn tab-btn--plan" onclick="switchTab('plan')">⚡ Strategic Plan</button>
+            <button class="tab-btn tab-btn--orch" onclick="switchTab('orch')">🤖 Orchestrator</button>
+            <button class="tab-btn tab-btn--conflict" onclick="switchTab('conflict')">⚠️ Conflict Check</button>
+        </nav>
+
+        <main class="glass-card">
+            <!-- Weather Section -->
+            <section id="weatherSection">
+                <form id="intelligenceForm">
+
+                <div class="input-group">
+                    <div class="input-field">
+                        <label for="source">Source Location</label>
+                        <input type="text" id="source" placeholder="e.g. San Francisco, CA" required>
+                    </div>
+                    <div class="input-field">
+                        <label for="destination">Destination Location</label>
+                        <input type="text" id="destination" placeholder="e.g. South Lake Tahoe, CA" required>
+                    </div>
+                    <div class="input-field">
+                        <label for="travelTime">Travel Time</label>
+                        <input type="text" id="travelTime" placeholder="e.g. Tomorrow 9 AM" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="analyze-btn" id="analyzeBtn">
+                    <span>Analyze Intelligence</span>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                </button>
+            </form>
+
+            <!-- Route Planning Section (Hidden by default) -->
+            <section id="routePlanningSection" style="display:none;">
+                <form id="routeForm">
+                    <div class="input-group">
+                        <div class="input-field">
+                            <label for="routeSource">Source</label>
+                            <input type="text" id="routeSource" placeholder="e.g. San Francisco" required>
+                        </div>
+                        <div class="input-field">
+                            <label for="routeDestination">Destination</label>
+                            <input type="text" id="routeDestination" placeholder="e.g. South Lake Tahoe" required>
+                        </div>
+                        <div class="input-field">
+                            <label for="conditions">Conditions (Optional)</label>
+                            <input type="text" id="conditions" placeholder="e.g. Avoid tolls">
+                        </div>
+                    </div>
+                    <button type="submit" class="analyze-btn" id="routeBtn">
+                        <span>Compute Best Route</span>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>
+                    </button>
+                </form>
+            </section>
+
+            <!-- Cost Estimation Section (Hidden by default) -->
+            <section id="costEstimationSection" style="display:none;">
+                <form id="costForm">
+                    <div class="input-group">
+                        <div class="input-field">
+                            <label for="costDistance">Distance (km)</label>
+                            <input type="number" id="costDistance" placeholder="e.g. 305" required>
+                        </div>
+                        <div class="input-field">
+                            <label for="costTime">Travel Time (mins)</label>
+                            <input type="number" id="costTime" placeholder="e.g. 210" required>
+                        </div>
+                    </div>
+                    <div style="margin-top: 1rem; font-size: 0.8rem; color: var(--text-secondary); text-align: center;">
+                        Assumptions: 15 km/L Efficiency | 100 INR/L Price
+                    </div>
+                    <button type="submit" class="analyze-btn" id="costBtn" style="margin-top: 1rem;">
+                        <span>Calculate Cost</span>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                    </button>
+                </form>
+            </section>
+
+            <!-- Strategic Plan Section (Hidden by default) -->
+            <section id="strategicPlanSection" style="display:none;">
+                <div class="plan-header-banner">
+                    <div class="plan-header-icon">⚡</div>
+                    <div>
+                        <h3 style="font-size: 1.2rem; font-weight: 700;">Unified Multi-Agent Synthesis</h3>
+                        <p style="font-size: 0.85rem; color: var(--text-secondary);">Combines Weather · Route · Cost intelligence into one actionable plan.</p>
+                    </div>
+                </div>
+                <form id="planForm">
+                    <div class="input-group">
+                        <div class="input-field">
+                            <label for="planSource">Source</label>
+                            <input type="text" id="planSource" placeholder="e.g. Mumbai" required>
+                        </div>
+                        <div class="input-field">
+                            <label for="planDest">Destination</label>
+                            <input type="text" id="planDest" placeholder="e.g. Pune" required>
+                        </div>
+                        <div class="input-field">
+                            <label for="planTime">Travel Time</label>
+                            <input type="text" id="planTime" placeholder="e.g. Monday 7 AM" required>
+                        </div>
+                        <div class="input-field">
+                            <label for="planDistance">Est. Distance (km)</label>
+                            <input type="number" id="planDistance" placeholder="e.g. 150" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="analyze-btn analyze-btn--plan" id="planBtn">
+                        <span>Generate Strategic Plan</span>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                    </button>
+                </form>
+            </section>
+
+            <div id="resultsSection" class="results-section">
+                <!-- Weather Results -->
+                <div id="weatherResults" class="results-grid">
+                    <div class="result-card">
+                        <span id="riskBadge" class="risk-badge">LOW</span>
+                        <h3 id="summaryTitle" style="margin-bottom: 0.5rem; font-size: 1.25rem;">Analysis Summary</h3>
+                        <p id="weatherSummary" style="font-size: 0.95rem; line-height: 1.6; color: var(--text-secondary);"></p>
+                    </div>
+                    <div class="result-card">
+                        <h3 style="margin-bottom: 0.5rem; font-size: 1.25rem;">Safety Protocols</h3>
+                        <p id="recommendation" style="font-size: 0.95rem; line-height: 1.6; color: var(--text-secondary);"></p>
+                        <div style="margin-top: 1rem;">
+                            <h4 style="font-size: 0.85rem; text-transform: uppercase; color: #a5b4fc; margin-bottom: 0.5rem;">Detected Hazards</h4>
+                            <ul id="hazardList" class="hazard-list"></ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Route Results -->
+                <div id="routeResults" class="results-grid" style="display:none;">
+                    <div class="result-card">
+                        <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <h3 style="font-size: 1.25rem;">Routing Metrics</h3>
+                            <div style="text-align:right;">
+                                <span id="distKM" style="font-size: 1.5rem; font-weight: 700; color: #fff;">0</span><span style="color: var(--text-secondary);"> km</span>
+                                <div id="etaMin" style="font-size: 0.9rem; color: #a5b4fc;">0 mins</div>
+                            </div>
+                        </div>
+                        <h4 style="font-size: 0.85rem; text-transform: uppercase; color: #a5b4fc; margin-bottom: 0.5rem;">Main Corridor</h4>
+                        <p id="mainRoute" style="font-size: 0.95rem; line-height: 1.6; font-weight: 500;"></p>
+                        <div style="margin-top: 1rem;">
+                            <h4 style="font-size: 0.85rem; text-transform: uppercase; color: #a5b4fc; margin-bottom: 0.5rem;">Alt Pathway</h4>
+                            <p id="altRoute" style="font-size: 0.9rem; color: var(--text-secondary);"></p>
+                        </div>
+                    </div>
+                    <div class="result-card">
+                        <h3 style="margin-bottom: 1rem; font-size: 1.25rem;">Navigation Steps</h3>
+                        <div id="routeSteps" style="font-size: 0.9rem; max-height: 200px; overflow-y: auto; padding-right: 10px;">
+                            <!-- Steps injected here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cost Results -->
+                <div id="costResults" class="results-grid" style="display:none;">
+                    <div class="result-card">
+                        <h3 style="font-size: 1.25rem; margin-bottom: 1rem;">Resource Consumption</h3>
+                        <div style="display:flex; justify-content: space-between; align-items: baseline;">
+                            <span style="color: var(--text-secondary);">Fuel Required:</span>
+                            <span id="fuelReq" style="font-size: 1.5rem; font-weight: 700; color: #10b981;">0</span><span style="color: #10b981; font-weight: 600;"> L</span>
+                        </div>
+                        <div style="display:flex; justify-content: space-between; align-items: baseline; margin-top: 0.5rem;">
+                            <span style="color: var(--text-secondary);">Fuel Cost:</span>
+                            <span id="fuelCost" style="font-size: 1.25rem; font-weight: 600; color: #fff;">₹0</span>
+                        </div>
+                    </div>
+                    <div class="result-card" style="background: rgba(99, 102, 241, 0.1);">
+                        <h3 style="font-size: 1.25rem; margin-bottom: 1rem; color: var(--accent-color);">Total Estimated Budget</h3>
+                        <div style="font-size: 2.5rem; font-weight: 800; color: #fff; margin-bottom: 0.5rem;">
+                            <span id="totalCost">₹0</span>
+                        </div>
+                        <p style="font-size: 0.85rem; color: var(--text-secondary);">Includes fuel + 15% operational buffer for tolls/maintenance.</p>
+                    </div>
+                </div>
+                <!-- Strategic Plan Results -->
+                <div id="strategicResults" style="display:none;">
+                    <div class="plan-summary-bar" id="planSummaryBar"></div>
+
+                    <div class="warnings-section" id="warningsBox" style="display:none;">
+                        <h4 class="warnings-title">⚠ Active Warnings</h4>
+                        <ul id="warningsList" class="hazard-list"></ul>
+                    </div>
+
+                    <div class="plan-steps-container">
+                        <h4 style="font-size: 0.85rem; text-transform: uppercase; color: #a5b4fc; margin-bottom: 1rem;">Execution Plan</h4>
+                        <div id="planStepsList"></div>
+                    </div>
+
+                    <div class="plan-metrics-grid">
+                        <div class="plan-metric-card">
+                            <span class="plan-metric-label">Risk Level</span>
+                            <span id="planRisk" class="risk-badge">—</span>
+                        </div>
+                        <div class="plan-metric-card">
+                            <span class="plan-metric-label">Distance</span>
+                            <span id="planDistDisplay" class="plan-metric-value">—</span>
+                        </div>
+                        <div class="plan-metric-card">
+                            <span class="plan-metric-label">ETA</span>
+                            <span id="planEtaDisplay" class="plan-metric-value">—</span>
+                        </div>
+                        <div class="plan-metric-card" style="border-color: rgba(99,102,241,0.4);">
+                            <span class="plan-metric-label">Total Budget</span>
+                            <span id="planBudgetDisplay" class="plan-metric-value" style="color: #a5b4fc;">—</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Orchestrator Results -->
+                <div id="orchResults" style="display:none;">
+                    <div class="orch-pipeline" id="orchPipeline"></div>
+                    <div class="orch-combined-grid" id="orchGrid"></div>
+                </div>
+
+                <div>
+                    <label class="json-label">Intelligence Export (Strict JSON)</label>
+                    <pre id="jsonOutput" class="json-output"></pre>
+                </div>
+            </div>
+
+            <!-- Orchestrator Section (Hidden by default) -->
+            <section id="orchSection" style="display:none;">
+                <div class="orch-banner">
+                    <div class="orch-banner-icon">🤖</div>
+                    <div>
+                        <h3 style="font-size:1.2rem;font-weight:700;">AI Orchestrator</h3>
+                        <p style="font-size:0.85rem;color:var(--text-secondary);">Coordinates all agents in strict pipeline order — Route → Weather → Budget → Summary.</p>
+                    </div>
+                </div>
+                <form id="orchForm">
+                    <div class="input-group">
+                        <div class="input-field">
+                            <label for="orchSource">Source</label>
+                            <input type="text" id="orchSource" placeholder="e.g. Delhi" required>
+                        </div>
+                        <div class="input-field">
+                            <label for="orchDest">Destination</label>
+                            <input type="text" id="orchDest" placeholder="e.g. Agra" required>
+                        </div>
+                        <div class="input-field">
+                            <label for="orchTime">Travel Time</label>
+                            <input type="text" id="orchTime" placeholder="e.g. Saturday 8 AM" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="analyze-btn analyze-btn--orch" id="orchBtn">
+                        <span>Run Orchestration Pipeline</span>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M4.93 4.93a10 10 0 0 0 0 14.14"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2"/></svg>
+                    </button>
+                </form>
+            </section>
+
+            <!-- Conflict Resolution Section -->
+            <section id="conflictSection" style="display:none;">
+                <div class="conflict-banner">
+                    <div class="conflict-banner-icon">⚠️</div>
+                    <div>
+                        <h3 style="font-size:1.2rem;font-weight:700;">Conflict Resolution Agent</h3>
+                        <p style="font-size:0.85rem;color:var(--text-secondary);">Detects inconsistencies across agent outputs and recommends corrective adjustments.</p>
+                    </div>
+                </div>
+
+                <form id="conflictForm">
+                    <div style="margin-bottom:1.2rem;">
+                        <p style="font-size:0.82rem;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.75rem;">Agent Outputs to Validate</p>
+                        <div class="input-group">
+                            <div class="input-field">
+                                <label for="cxSource">Source</label>
+                                <input type="text" id="cxSource" placeholder="e.g. Mumbai" required>
+                            </div>
+                            <div class="input-field">
+                                <label for="cxDest">Destination</label>
+                                <input type="text" id="cxDest" placeholder="e.g. Pune" required>
+                            </div>
+                            <div class="input-field">
+                                <label for="cxRisk">Weather Risk Level</label>
+                                <select id="cxRisk" class="cx-select">
+                                    <option value="LOW">LOW</option>
+                                    <option value="MEDIUM">MEDIUM</option>
+                                    <option value="HIGH">HIGH</option>
+                                </select>
+                            </div>
+                            <div class="input-field">
+                                <label for="cxDist">Route Distance (km)</label>
+                                <input type="number" id="cxDist" placeholder="e.g. 305" required>
+                            </div>
+                            <div class="input-field">
+                                <label for="cxBudget">Total Estimated Cost (&#8377;)</label>
+                                <input type="number" id="cxBudget" placeholder="e.g. 2500" required>
+                            </div>
+                            <div class="input-field">
+                                <label for="cxRoute">Main Route Used</label>
+                                <input type="text" id="cxRoute" placeholder="e.g. NH-48 Expressway">
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="analyze-btn analyze-btn--conflict" id="conflictBtn">
+                        <span>Run Conflict Analysis</span>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                    </button>
+                </form>
+
+                <!-- Conflict Results (shown inline, not in main results panel) -->
+                <div id="conflictInlineResults" style="display:none;margin-top:2rem;">
+                    <div id="conflictVerdictBar"></div>
+                    <div id="conflictCardsGrid" class="conflict-cards-grid"></div>
+                    <div style="margin-top:1.5rem;">
+                        <label class="json-label">Intelligence Export (Strict JSON)</label>
+                        <pre id="conflictJsonOut" class="json-output"></pre>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
